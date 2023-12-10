@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Controller.Navigation;
 using Controller.Player;
 using Service;
@@ -22,7 +23,7 @@ namespace Controller.General
             GameService = new GameService();
             
             PlayerController.Setup();
-            BoardController.Setup(Move);
+            BoardController.Setup(TileClicked);
         }
 
         private void Start()
@@ -30,9 +31,15 @@ namespace Controller.General
             BoardController.CreateMap(GameService.GenerateMap());
         }
 
-        private void Move(Vector2 moveTo)
+        private void TileClicked(Vector2 tilePos)
         {
-            PlayerController.Move(moveTo);
+            Move(BoardController.CreatePath(PlayerController.Player.Position, tilePos));
+            
+        }
+
+        private void Move(IList<Vector2> path)
+        {
+            PlayerController.Move(path);
         }
     }
 }

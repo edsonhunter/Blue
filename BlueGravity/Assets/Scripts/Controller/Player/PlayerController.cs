@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Domain.Interface;
 using UnityEngine;
 
@@ -5,7 +7,7 @@ namespace Controller.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        private IPlayer Player { get; set; }
+        internal IPlayer Player { get; set; }
         
         public void Setup()
         {
@@ -13,10 +15,20 @@ namespace Controller.Player
             transform.position = Player.Position;
         }
 
-        public void Move(Vector2 moveTo)
+        public void Move(IList<Vector2> path)
         {
-            Player.Move(moveTo);
-            transform.position = Player.Position;
+            StartCoroutine(MovePlayer(path));
+        }
+
+        IEnumerator MovePlayer(IList<Vector2> path)
+        {
+            foreach (var newPos in path)
+            {
+                transform.position = newPos;
+                yield return new WaitForSeconds(0.5f);    
+            }
+
+            Player.Move(transform.position);
         }
     }
 }
