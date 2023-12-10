@@ -7,6 +7,6 @@ namespace Domain.Interface
         Vector2 Position { get; }
         bool Moving { get; }
 
-        bool Move(Vector2 newPosition);
+        bool Move(Vector2 moveTo);
     }
 }

@@ -10,21 +10,21 @@ namespace Domain.Player
 
         private Player()
         {
-            Position = Vector2.zero;    
+            Position = Vector2.zero;
+            Moving = false;
         }
         
-        public Player(Vector2 position, bool moving)
+        public Player(Vector2 position) : this()
         {
             Position = position;
-            Moving = moving;
         }
         
-        public bool Move(Vector2 newPosition)
+        public bool Move(Vector2 moveTo)
         {
             if (Moving)
                 return false;
 
-            Position = newPosition;
+            Position = moveTo;
             return true;
         }
     }

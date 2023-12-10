@@ -1,19 +1,21 @@
+using Domain.Interface;
 using UnityEngine;
 
 namespace Controller.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        private IPlayer Player { get; set; }
         
+        public void Setup()
+        {
+            Player = new Domain.Player.Player(new Vector2(0, 1));
+            transform.position = Player.Position;
         }
 
-        // Update is called once per frame
-        void Update()
+        public void Move(Vector2 moveTo)
         {
-        
+            Player.Move(moveTo);
         }
     }
 }
