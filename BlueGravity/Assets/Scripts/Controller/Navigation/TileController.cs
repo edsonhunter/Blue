@@ -2,10 +2,11 @@ using System;
 using Domain.Interface;
 using Domain.Navigation;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Controller.Navigation
 {
-    public class TileController : MonoBehaviour
+    public class TileController : MonoBehaviour, IPointerClickHandler
     {
         private ITile Tile { get; set; }
         private Action<Vector2> OnClick { get; set; }
@@ -18,7 +19,7 @@ namespace Controller.Navigation
             OnClick = onTileClicked;
         }
 
-        private void OnMouseDown()
+        public void OnPointerClick(PointerEventData eventData)
         {
             OnClick.Invoke(Tile.Position);
         }

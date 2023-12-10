@@ -16,6 +16,7 @@ namespace Controller.Player
         public void Move(Vector2 moveTo)
         {
             Player.Move(moveTo);
+            transform.position = Player.Position;
         }
     }
 }
