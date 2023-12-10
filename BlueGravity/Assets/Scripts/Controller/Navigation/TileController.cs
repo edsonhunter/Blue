@@ -11,12 +11,11 @@ namespace Controller.Navigation
         private ITile Tile { get; set; }
         private Action<Vector2> OnClick { get; set; }
 
-        public void Setup(Action<Vector2> onTileClicked)
+        public void Setup(Action<Vector2> onTileClicked, ITile tile)
         {
-            Tile = new Tile(new Vector2(2,2), false);
-            transform.position = Tile.Position;
-            
+            Tile = tile;
             OnClick = onTileClicked;
+            transform.position = Tile.Position;
         }
 
         public void OnPointerClick(PointerEventData eventData)

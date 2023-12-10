@@ -1,5 +1,8 @@
+using System;
 using Controller.Navigation;
 using Controller.Player;
+using Service;
+using Service.Interface;
 using UnityEngine;
 
 namespace Controller.General
@@ -10,12 +13,21 @@ namespace Controller.General
         private PlayerController PlayerController { get; set; }
         
         [field: SerializeField]
-        private TileController TileController { get; set; }
+        private BoardController BoardController { get; set; }
+
+        private IGameService GameService { get; set; }
 
         private void Awake()
         {
+            GameService = new GameService();
+            
             PlayerController.Setup();
-            TileController.Setup(Move);
+            BoardController.Setup(Move);
+        }
+
+        private void Start()
+        {
+            BoardController.CreateMap(GameService.GenerateMap());
         }
 
         private void Move(Vector2 moveTo)
