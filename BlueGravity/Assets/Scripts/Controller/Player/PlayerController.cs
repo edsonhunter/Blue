@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Interface;
 using UnityEngine;
 
@@ -9,26 +10,25 @@ namespace Controller.Player
     {
         internal IPlayer Player { get; set; }
         
-        public void Setup()
+        public void Setup(IPlayer player)
         {
-            Player = new Domain.Player.Player(new Vector2(0, 1));
-            transform.position = Player.Position;
+            Player = player;
+            transform.position = Player.CurrentTile.Position;
         }
 
-        public void Move(IList<Vector2> path)
+        public void Move(IList<ITile> path, ITile destTile)
         {
-            StartCoroutine(MovePlayer(path));
+            StartCoroutine(MovePlayer(path, destTile));
         }
 
-        IEnumerator MovePlayer(IList<Vector2> path)
+        IEnumerator MovePlayer(IList<ITile> path, ITile destTile)
         {
+            Player.Move(destTile);
             foreach (var newPos in path)
             {
-                transform.position = newPos;
+                transform.position = newPos.Position;
                 yield return new WaitForSeconds(0.5f);    
             }
-
-            Player.Move(transform.position);
         }
     }
 }

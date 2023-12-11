@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Interface;
+using Domain.Navigation;
 using UnityEngine;
 
 namespace Controller.Navigation
@@ -11,75 +11,68 @@ namespace Controller.Navigation
     {
         [field: SerializeField] private TileController TilePrefab { get; set; }
 
-        private IList<TileController> TileControllers { get; set; }
-        private Action<Vector2> OnTileClicked { get; set; }
+        private IList<IList<ITile>> Map { get; set; }
+        private Action<ITile> OnTileClicked { get; set; }
 
-        public void Setup(Action<Vector2> onTileClicked)
+        public void Setup(Action<ITile> onTileClicked)
         {
-            TileControllers = new List<TileController>();
             OnTileClicked = onTileClicked;
         }
 
-        public void CreateMap(IList<ITile> map)
+        public void CreateMap(IList<IList<ITile>> map)
         {
-            foreach (var tile in map)
+            Map = map;
+            
+            foreach (var row in map)
             {
-                var controller = Instantiate(TilePrefab, transform);
-                controller.Setup(TileClicked, tile);
-                TileControllers.Add(controller);
+                foreach (var tile in row)
+                {
+                    var controller = Instantiate(TilePrefab, transform);
+                    controller.Setup(TileClicked, tile);    
+                }
             }
         }
 
-        private void TileClicked(Vector2 moveTo)
+        private void TileClicked(ITile moveToTile)
         {
-            OnTileClicked.Invoke(moveTo);
+            OnTileClicked.Invoke(moveToTile);
         }
 
-        public IList<Vector2> CreatePath(Vector2 origin, Vector2 destination)
+        public IList<ITile> CreatePath(ITile origin, ITile destination)
         {
-            var path = new List<Vector2>();
-            var closed = new List<Vector2>();
-            Debug.Log($"{origin} : {destination}");
-            path.Add(origin);
-            int safeCounter = 0;
-            while (safeCounter < 999)
+            var open = new List<ITilePath>();
+            var closed = new List<ITile>();
+            
+            var originPath = new TilePath();
+            originPath.AddTile(origin);
+            open.Add(originPath);
+
+            while (open.Count > 0)
             {
-                safeCounter++;
-                var current = path.Last();
-                Debug.Log("counter:" + safeCounter +"current: "+current);
-                if (closed.Contains(current))
+                var current = open.First();
+                open.Remove(current);
+                
+                if (current.LastTile == destination)
+                {
+                    return current.Tiles;
+                }
+                
+                if (closed.Contains(current.LastTile))
                 {
                     continue;
                 }
 
-                if (current == destination)
-                {
-                    return path;
-                }
+                closed.Add(current.LastTile);
 
-                closed.Add(current);
-                if (destination.x > current.x)
+                foreach (var neighbor in current.LastTile.Neighbors)
                 {
-                    current += Vector2.right;
+                    var newPath = new TilePath(current);
+                    newPath.AddTile(neighbor);
+                    open.Add(newPath);
                 }
-                else if (destination.x < current.x)
-                {
-                    current += Vector2.left;
-                }
-                else if (destination.y > current.y)
-                {
-                    current += Vector2.up;
-                }
-                else if (destination.y < current.y)
-                {
-                    current += Vector2.down;
-                }
-
-                Debug.Log(current);
-                path.Add(current);
             }
 
-            return new List<Vector2>();
+            return new List<ITile>();
         }
     }
 }

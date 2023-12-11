@@ -1,22 +1,29 @@
-﻿using Domain.Interface;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Domain.Interface;
 using UnityEngine;
 
 namespace Domain.Navigation
 {
     public class Tile : ITile
     {
-        public Vector2 Position { get; }
-        public bool Ocuppied { get; }
+        public Vector2 Position { get; private set; }
+        public IList<ITile> Neighbors { get; private set; } 
         
         private Tile()
         {
             Position = Vector2.zero;
+            Neighbors = new Collection<ITile>();
         }
         
-        public Tile(Vector2 position, bool ocuppied) : this()
+        public Tile(Vector2 position) : this()
         {
             Position = position;
-            Ocuppied = ocuppied;
+        }
+
+        public void AddNeighbor(ITile neighbor)
+        {
+            Neighbors.Add(neighbor);
         }
     }
 }

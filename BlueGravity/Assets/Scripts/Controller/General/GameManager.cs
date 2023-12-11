@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Controller.Navigation;
 using Controller.Player;
+using Domain.Interface;
 using Service;
 using Service.Interface;
 using UnityEngine;
@@ -22,24 +23,19 @@ namespace Controller.General
         {
             GameService = new GameService();
             
-            PlayerController.Setup();
             BoardController.Setup(TileClicked);
         }
 
         private void Start()
         {
             BoardController.CreateMap(GameService.GenerateMap());
+            PlayerController.Setup(GameService.GeneratePlayer());
         }
 
-        private void TileClicked(Vector2 tilePos)
+        private void TileClicked(ITile destTile)
         {
-            Move(BoardController.CreatePath(PlayerController.Player.Position, tilePos));
-            
-        }
-
-        private void Move(IList<Vector2> path)
-        {
-            PlayerController.Move(path);
+            var path = BoardController.CreatePath(PlayerController.Player.CurrentTile, destTile);
+            PlayerController.Move(path, destTile); 
         }
     }
 }

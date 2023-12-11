@@ -5,6 +5,7 @@ namespace Service.Interface
 {
     public interface IGameService
     {
-        IList<ITile> GenerateMap();
+        IList<IList<ITile>> GenerateMap();
+        IPlayer GeneratePlayer();
     }
 }

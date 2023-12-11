@@ -1,30 +1,28 @@
 ﻿using Domain.Interface;
-using UnityEngine;
 
 namespace Domain.Player
 {
     public class Player : IPlayer
     {
-        public Vector2 Position { get; private set; }
+        public ITile CurrentTile { get; private set; }
         public bool Moving { get; }
 
         private Player()
         {
-            Position = Vector2.zero;
             Moving = false;
         }
         
-        public Player(Vector2 position) : this()
+        public Player(ITile currentTile) : this()
         {
-            Position = position;
+            CurrentTile = currentTile;
         }
         
-        public bool Move(Vector2 moveTo)
+        public bool Move(ITile moveToTile)
         {
             if (Moving)
                 return false;
 
-            Position = moveTo;
+            CurrentTile = moveToTile;
             return true;
         }
     }

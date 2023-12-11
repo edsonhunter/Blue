@@ -4,9 +4,10 @@ namespace Domain.Interface
 {
     public interface IPlayer
     {
-        Vector2 Position { get; }
+        ITile CurrentTile { get; }
         bool Moving { get; }
+        
 
-        bool Move(Vector2 moveTo);
+        bool Move(ITile moveToTile);
     }
 }
